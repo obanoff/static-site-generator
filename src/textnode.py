@@ -29,21 +29,23 @@ class TextNode:
 
     def text_node_to_html_node(self):
         if self.text_type == text_type_text:
-            return LeafNode(None, self.text)
+            return LeafNode(tag=None, value=self.text)
 
         if self.text_type == text_type_bold:
-            return LeafNode("b", self.text)
+            return LeafNode(tag="b", value=self.text)
 
         if self.text_type == text_type_italic:
-            return LeafNode("i", self.text)
+            return LeafNode(tag="i", value=self.text)
 
         if self.text_type == text_type_code:
-            return LeafNode("code", self.text)
+            return LeafNode(tag="code", value=self.text)
 
         if self.text_type == text_type_link:
-            return LeafNode("a", self.text, {"href": self.url})
+            return LeafNode(tag="a", value=self.text, props={"href": self.url})
 
         if self.text_type == text_type_image:
-            return LeafNode("img", "", {"src": self.url, "alt": self.text})
+            return LeafNode(
+                tag="img", value=None, props={"src": self.url, "alt": self.text}
+            )
 
         raise Exception("invalid text type")
