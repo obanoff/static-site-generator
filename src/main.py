@@ -2,6 +2,7 @@ from textnode import TextNode
 from block import markdown_to_html_node
 from htmlnode import HTMLNode
 import os, shutil, re
+from pathlib import Path
 
 
 def handle_error(func, path, exc_info):
@@ -61,6 +62,26 @@ def generate_page(from_path, template_path, dest_path):
         dest_file.write(template_complete)
 
 
+def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+    if not os.path.exists(dest_dir_path):
+        os.makedirs(dest_dir_path)
+
+    for entry in os.listdir(dir_path_content):
+        path = os.path.join(dir_path_content, entry)
+
+        if os.path.isdir(path):
+            generate_pages_recursively(
+                path, template_path, os.path.join(dest_dir_path, entry)
+            )
+
+        if os.path.isfile(path):
+            generate_page(
+                path,
+                template_path,
+                os.path.join(dest_dir_path, f"{os.path.splitext(entry)[0]}.html"),
+            )
+
+
 def main():
     source, target = "./static", "./public"
 
@@ -69,7 +90,7 @@ def main():
 
     copy(source, target)
 
-    generate_page("./content/index.md", "template.html", "./public/index.html")
+    generate_pages_recursively("./content", "template.html", "./public")
 
 
 main()
